@@ -1,0 +1,33 @@
+tell front window of application "OmniGraffle"
+	activate
+	set current_document to front document
+	set canvas_list to canvas of current_document
+	set canvas_todo to length of canvas_list
+	set canvas_counter to 1
+	
+	repeat with my_canvas in canvas_list
+		set shape_counter to 1
+		set shape_list to shapes in my_canvas
+		set shape_todo to length of shape_list
+		repeat with my_shape in shape_list
+			my update_progress(canvas_counter, canvas_todo, shape_counter, shape_todo)
+			set myText to text of my_shape
+			if myText is not equal to "" then
+				set AppleScript's text item delimiters to {return & linefeed, return, linefeed, character id 8233, character id 8232}
+				set newText to text items of myText
+				set AppleScript's text item delimiters to {" "}
+				set newText to newText as text
+				set user name of my_shape to newText
+			end if
+			set shape_counter to shape_counter + 1
+		end repeat
+		set canvas_counter to canvas_counter + 1
+	end repeat
+end tell
+
+on update_progress(canvas_counter, canvas_todo, shape_counter, shape_todo)
+	set progress total steps to canvas_todo
+	set progress completed steps to canvas_counter
+	set progress description to (("Processing Canvas: " & canvas_counter as string) & " of " & canvas_todo as string)
+	set progress additional description to (("Processing Shape: " & shape_counter as string) & " of " & shape_todo as string)
+end update_progress
